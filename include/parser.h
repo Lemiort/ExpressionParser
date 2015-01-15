@@ -9,6 +9,7 @@ using System.Text;*/
 #include <vector>
 #include <list>
 #include <stack>
+using namespace std;
 
 namespace Parser
 {
