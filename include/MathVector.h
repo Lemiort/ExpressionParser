@@ -28,6 +28,9 @@ class MathVector
 double operator*(MathVector l, MathVector r)throw (Exception);
 MathVector operator+(MathVector l,MathVector r)throw (Exception);
 MathVector operator-(MathVector l,MathVector r)throw (Exception);
+bool operator==(MathVector l, MathVector r)throw (Exception);
+bool operator!=(MathVector l, MathVector r)throw (Exception);
+bool operator<(MathVector l, MathVector r)throw (Exception);
 /*double operator*(Vector l, Vector r)throw (Exception);
 Vector operator+(Vector l,Vector r)throw (Exception);
 Vector operator-(Vector l,Vector r)throw (Exception);*/

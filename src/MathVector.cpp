@@ -140,22 +140,7 @@ double operator*(MathVector l, MathVector r)throw (Exception)
     }
 }
 
-
-/*****************************
-Vector operator+(Vector l,Vector r) throw (Exception)
-{
-    if(l.Getlength()!=r.Getlength())
-        return 0;
-    else
-    {
-        Vector temp(l.Getlength());
-        for(int i=0;i<temp.Getlength();i++)
-            temp[i]= l[i]+r[i];
-        return temp;
-    }
-}
-
-Vector operator-(Vector l,Vector r) throw (Exception)
+bool operator==(MathVector l, MathVector r)throw (Exception)
 {
     if(l.Getlength()!=r.Getlength())
     {
@@ -164,64 +149,37 @@ Vector operator-(Vector l,Vector r) throw (Exception)
     }
     else
     {
-        Vector temp(l.Getlength());
-        for(int i=0;i<temp.Getlength();i++)
-            temp[i]= l[i]-r[i];
-        return temp;
-    }
-}
-
-Vector operator*(double l,Vector r)
-{
-        Vector temp(r.Getlength());
-        for(int i=0;i<temp.Getlength();i++)
-            temp[i]= l*r[i];
-        return temp;
-}
-
-void Vector::Normalize()
-{
-    n= norma();
-    for(int i=0;i<length;i++)
-        vec[i]/=norma();
-}
-
-Vector operator+(Vector v)
-{
-    return v;
-}
-Vector operator-(Vector v)
-{
-    Vector t(v.Getlength());
-    for(int i=0;i<t.Getlength();i++)
-        t[i]=-v[i];
-    return t;
-}
-
-Vector& Vector::operator=(Vector right)
-{
-    Vector res(right.Getlength());
-    for(int i=0;i<res.Getlength();i++)
-        res[i]=right[i];
-    return res;
-}
-
-double operator*(Vector l, Vector r)throw (Exception)
-{
-    if(l.Getlength()!=r.Getlength())
-    {
-        throw Exception("Different vector lenghts");
-        return 0;
-    }
-    else
-    {
-        double res=0;
+        bool res=true;
         for(int i=0;i<l.Getlength();i++)
-            res+= l[i]*r[i];
+        {
+            if(l[i]!=r[i])
+                return false;
+        }
+        //std::cout<<"\nres="<<res<<std::endl;
         return res;
     }
 }
-*/
+
+bool operator!=(MathVector l, MathVector r)throw (Exception)
+{
+    if(l.Getlength()!=r.Getlength())
+    {
+        throw Exception("Different vector lenghts");
+        return 0;
+    }
+    else
+    {
+        bool res=false;
+        for(int i=0;i<l.Getlength();i++)
+        {
+            if(l[i]!=r[i])
+                return true;
+        }
+        //std::cout<<"\nres="<<res<<std::endl;
+        return res;
+    }
+}
+
 
 std::string MathVector::ToString()
 {

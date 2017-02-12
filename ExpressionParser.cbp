@@ -33,11 +33,14 @@
 			<Add option="-fexceptions" />
 			<Add directory="include" />
 			<Add directory="src" />
+			<Add directory="include/optimization" />
 		</Compiler>
 		<Unit filename="include/MathVector.h" />
 		<Unit filename="include/Matrix.h" />
 		<Unit filename="include/exception.h" />
 		<Unit filename="include/expression.h" />
+		<Unit filename="include/optimization/lab3.h" />
+		<Unit filename="include/optimization/lab3_vector.h" />
 		<Unit filename="include/parser.h" />
 		<Unit filename="src/MathVector.cpp" />
 		<Unit filename="src/Matrix.cpp" />
