@@ -1,4 +1,4 @@
-//#include "expressionEstimator.h"
+п»ї//#include "expressionEstimator.h"
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -128,7 +128,7 @@ MathVector HookeJeeves(MathVector X0)
     {
         do
         {
-            //шаг 1 ИП1
+            //С€Р°Рі 1 РРџ1
             X2=X1;
             for(int i=0; i<X2.Getlength(); i++)
             {
@@ -142,7 +142,7 @@ MathVector HookeJeeves(MathVector X0)
                     X2 = X2;
 
             }
-            //шаг 2, ИП1 неудачен
+            //С€Р°Рі 2, РРџ1 РЅРµСѓРґР°С‡РµРЅ
             if(X2==X1)
             {
                 if(h>eps)
@@ -154,15 +154,15 @@ MathVector HookeJeeves(MathVector X0)
                 }
 
             }
-            //на шаг 3
+            //РЅР° С€Р°Рі 3
             else
                 break;
         }
         while(true);
-        //шаг 3
+        //С€Р°Рі 3
         X3 = X2 + (X2-X1);
 
-        //проверка в окрестности Х3
+        //РїСЂРѕРІРµСЂРєР° РІ РѕРєСЂРµСЃС‚РЅРѕСЃС‚Рё РҐ3
         X4 = X3;
         for(int i=0; i<X4.Getlength(); i++)
         {
@@ -175,15 +175,15 @@ MathVector HookeJeeves(MathVector X0)
             else
                 X4 = X4;
         }
-        //шаг 4
-        //удача
+        //С€Р°Рі 4
+        //СѓРґР°С‡Р°
         if(X4!=X3)
         {
             k++;
             X1 = X2;
             X2 = X4;
         }
-        //неудача
+        //РЅРµСѓРґР°С‡Р°
         else
         {
             k=1;
@@ -226,12 +226,12 @@ MathVector NelderMead(MathVector X00)
     do
     {
 
-        //шаг 1
+        //С€Р°Рі 1
         sort(X.begin(), X.end(),predicate);
 
-        //выводим симплекс
+        //РІС‹РІРѕРґРёРј СЃРёРјРїР»РµРєСЃ
 
-        //шаг2
+        //С€Р°Рі2
         //cout<<"\nStep 2";
         MathVector X0(n);
         for(int i=0; i<n; i++)
@@ -242,15 +242,15 @@ MathVector NelderMead(MathVector X00)
 
 
         MathVector Xr(n);
-        //рефлекторная точка
+        //СЂРµС„Р»РµРєС‚РѕСЂРЅР°СЏ С‚РѕС‡РєР°
         Xr=X0+ alpha*(X0-X.at(n));
 
-        //одна из пяти операций
+        //РѕРґРЅР° РёР· РїСЏС‚Рё РѕРїРµСЂР°С†РёР№
         //cout<<"\n y(Xr)="<<y(Xr);
-        //меньше y1
+        //РјРµРЅСЊС€Рµ y1
         if( y(Xr) < y(X.at(0)))
         {
-            //растяжение
+            //СЂР°СЃС‚СЏР¶РµРЅРёРµ
             //cout<<"\nStretching";
             MathVector Xl = X0 + gamma*(X0-X.at(n));
             if(y(Xl) < y(Xr))
@@ -261,10 +261,10 @@ MathVector NelderMead(MathVector X00)
             else
                 X.at(n) = Xr;
         }
-        //больше yn+1
+        //Р±РѕР»СЊС€Рµ yn+1
         else if( y(Xr) > y(X.at(n)) )
         {
-            //сжатие 1
+            //СЃР¶Р°С‚РёРµ 1
             //cout<<"\n Compression -";
             MathVector Xs = X0 - betta*(X0-X.at(n));
 
@@ -277,17 +277,17 @@ MathVector NelderMead(MathVector X00)
             }
 
         }
-        //больше y1, но меньше yn
+        //Р±РѕР»СЊС€Рµ y1, РЅРѕ РјРµРЅСЊС€Рµ yn
         else if( y(Xr) > y(X.at(0)) && y(Xr) < y(X.at(n-1)) )
         {
-            //отражние
+            //РѕС‚СЂР°Р¶РЅРёРµ
             // cout<<"\n Reflection";
             X.at(n) = Xr;
         }
-        //между yn и y n+1
+        //РјРµР¶РґСѓ yn Рё y n+1
         else if( y(Xr)> y(X.at(n-1)) && y(Xr) < y(X.at(n)))
         {
-            //сжатие2
+            //СЃР¶Р°С‚РёРµ2
             //cout<<"\n Compression +";
             MathVector Xs = X0 + betta*(X0-X.at(n));
 
@@ -339,7 +339,7 @@ MathVector NelderMead(MathVector X00)
 
 MathVector Rosenbrock(MathVector X00)
 {
-    //размерность системы
+    //СЂР°Р·РјРµСЂРЅРѕСЃС‚СЊ СЃРёСЃС‚РµРјС‹
     int n = X00.Getlength();
     MathVector Alpha(n);
     MathVector prevX = X00;
@@ -367,10 +367,11 @@ MathVector Rosenbrock(MathVector X00)
         prevX = currentX;
 
         //step 1
-        //получаем набор направлений минимизации
+        //РїРѕР»СѓС‡Р°РµРј РЅР°Р±РѕСЂ РЅР°РїСЂР°РІР»РµРЅРёР№ РјРёРЅРёРјРёР·Р°С†РёРё
         for(int k=0; k< n; k++)
         {
             Alpha[k] = LAB3_VECTOR::lab3(prevX, P[k], y, dy, eps);
+            //cout<<"\nalpha["<<k<<"]="<<Alpha[k];
         }
         MathVector deltaX(n);
         for(int k=0; k< n; k++)
@@ -378,13 +379,13 @@ MathVector Rosenbrock(MathVector X00)
             deltaX = deltaX + Alpha[k]*P[k];
         }
 
-        //получаем новую точку
+        //РїРѕР»СѓС‡Р°РµРј РЅРѕРІСѓСЋ С‚РѕС‡РєСѓ
         currentX = prevX + deltaX;
 
         //step 2
         if(deltaX.norma() <= eps)
             break;
-        //процедура Грамма-Шмидта
+        //РїСЂРѕС†РµРґСѓСЂР° Р“СЂР°РјРјР°-РЁРјРёРґС‚Р°
         else
         {
 
@@ -405,6 +406,8 @@ MathVector Rosenbrock(MathVector X00)
                     }
                     currentA = tempSum;
                 }
+                 A.push_back(currentA);
+                 //cout<<"\nA["<<i<<"] = "<<A[i].ToString();
 
                 //step 2
                 if(i == 0)
@@ -414,32 +417,39 @@ MathVector Rosenbrock(MathVector X00)
                 else
                 {
                     MathVector  tempSum(n);
-                    for( int k=0; k < i-1; k++)
+                    for( int k=0; k < i ; k++)
                     {
+                        //cout<<"\n(A["<<i<<"]*d["<<k<<"])"<<(A[i]*d[k]);
                         tempSum = tempSum + (A[i]*d[k])*d[k];
                     }
-                    currentB = currentA + tempSum;
+
+                    //cout<<"\ncurrentd[0] = "<<d[0].ToString();
+                    //cout<<"\nd[0]*A[0] = "<<(d[0]*A[0]);
+                    //cout<<"\nd[0]*A[0]*d[0] = "<<((d[0]*A[0])*d[0]).ToString();
+                    //cout<<"\ntempSum = "<<tempSum.ToString();
+                    currentB = currentA - tempSum;
                 }
+                B.push_back(currentB);
+                //cout<<"\nB["<<i<<"] = "<<B[i].ToString();
 
                 //step3
                 MathVector currentd(n);
                 currentd = currentB;
                 currentd.Normalize();
 
-                A.push_back(currentA);
-                B.push_back(currentB);
                 d.push_back(currentd);
+                //cout<<"\nd["<<i<<"] = "<<d[i].ToString();
             }
-            cout<<"\n";
-            //устаналиваем новые поисковые направления
+            //cout<<"\n";
+            //СѓСЃС‚Р°РЅР°Р»РёРІР°РµРј РЅРѕРІС‹Рµ РїРѕРёСЃРєРѕРІС‹Рµ РЅР°РїСЂР°РІР»РµРЅРёСЏ
             for(int i=0; i< n; i++)
             {
                 P[i] = d[i];
-                cout<<d[i].ToString()<<" ";
+                //cout<<d[i].ToString()<<" ";
             }
         }
 
-        cout<<"\nX["<<step<<"]="<<currentX.ToString();
+        //cout<<"\nX["<<step<<"]="<<currentX.ToString();
     }
     while(step++ < 100);
     cout<<"\nRosenbrock "<<step;

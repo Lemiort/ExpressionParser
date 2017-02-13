@@ -30,3 +30,5 @@
 bin/
 *.depend
 *.layout
+cmake-build-debug/
+.idea/
