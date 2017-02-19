@@ -9,6 +9,7 @@
 #include <expression.h>
 #include <algorithm>
 #include <vector>
+#include <queue>
 #include <lab3_vector.h>
 //#include <termios.h>
 
@@ -195,7 +196,7 @@ MathVector HookeJeeves(MathVector X0)
 
         n++;
     }
-    cout<<"\n Hooke-Jeeves k="<<n;
+    cout<<"\n\nHooke-Jeeves k="<<n;
     return  MathVector(X0.Getlength());
 }
 
@@ -320,13 +321,13 @@ MathVector NelderMead(MathVector X00)
         if(G<=eps)
         {
             //cout<<"\nG="<<G;
-            cout<<"\nNealder-Mead k="<<k;
+            cout<<"\n\nNealder-Mead k="<<k;
             return Xm;
         }
 
         if(k>=999)
         {
-            cout<<"\nNelder-Mead k="<<k;
+            cout<<"\n\nNelder-Mead k="<<k;
             return Xm;
         }
 
@@ -424,8 +425,8 @@ MathVector Rosenbrock(MathVector X00)
                     }
 
                     //cout<<"\ncurrentd[0] = "<<d[0].ToString();
-                    //cout<<"\nd[0]*A[0] = "<<(d[0]*A[0]);
-                    //cout<<"\nd[0]*A[0]*d[0] = "<<((d[0]*A[0])*d[0]).ToString();
+                    //cout<<"\nd[0]*A[1] = "<<(d[0]*A[1]);
+                    //cout<<"\nd[0]*A[0]*d[0] = "<<((d[0]*A[1])*d[0]).ToString();
                     //cout<<"\ntempSum = "<<tempSum.ToString();
                     currentB = currentA - tempSum;
                 }
@@ -452,60 +453,84 @@ MathVector Rosenbrock(MathVector X00)
         //cout<<"\nX["<<step<<"]="<<currentX.ToString();
     }
     while(step++ < 100);
-    cout<<"\nRosenbrock "<<step;
+    cout<<"\n\nRosenbrock "<<step;
 
     return currentX;
-    /*do
+}
+
+MathVector Powell(MathVector X00)
+{
+    //размерность системы
+    int n = X00.Getlength();
+    MathVector Alpha(n+1);
+    MathVector prevX = X00;
+    MathVector currentX = X00;
+
+    //std::vector<MathVector> d;
+    std::vector<MathVector> P;
+    for(int i=0; i< n; i++)
     {
+        MathVector temp(n);
+        temp[i] = 1.0;
+        P.push_back(temp);
+    }
 
-        for( int i=0; i< n; i++)
+
+
+
+
+    int step = 0;
+    do
+    {
+        prevX = currentX;
+
+        //step 1
+        //получаем набор направлений минимизации
+        for(int k=0; k< n; k++)
         {
-            MathVector currentA(n);
-            MathVector currentB(n);
-
-            //step 1
-            for(int k=0; k< n; k++)
-            {
-                Alpha[k] = LAB3_VECTOR::lab3(prevX, P[k], y, dy, eps);
-            }
-
-            if( abs(Alpha[n] - 0) <= eps)
-                currentA = P[i];
-            else
-            {
-                MathVector  tempSum(n);
-                for(int k=i; k<n; k++)
-                {
-                    tempSum = tempSum + Alpha[k]*P[k];
-                }
-                currentA = tempSum;
-            }
-
-            //step 2
-            if(i == 0)
-            {
-                currentB = currentA;
-            }
-            else
-            {
-                MathVector  tempSum(n);
-                for( int k=0; k < i-1; k++)
-                {
-                    tempSum = tempSum + (A[i]*d[k])*d[k];
-                }
-                currentB = currentA + tempSum;
-            }
-
-            //step3
-            MathVector currentd(n);
-            currentd = currentB;
-            currentd.Normalize();
-
-            A.push_back(currentA);
-            B.push_back(currentB);
-            d.push_back(currentd);
+            Alpha[k] = LAB3_VECTOR::lab3(currentX, P[k], y, dy, eps);
+             currentX = currentX + Alpha[k]*P[k];
         }
-    }while( )*/
+
+        //получаем новую точку
+        //currentX = prevX + deltaX;
+
+        //получаем направление
+        MathVector currentd = currentX - prevX;
+        currentd.Normalize();
+        //заключительный поиск
+        Alpha[n] = LAB3_VECTOR::lab3(currentX, currentd, y, dy, eps);
+        currentX = currentX + Alpha[n]*currentd;
+
+        //cout<<"\n\n X_n+2="<<currentX.ToString();
+
+        ////запоминаем
+        //d.push_back(currentd);
+
+        //step 2
+        if( abs(Alpha[n]) <= eps*eps*eps )
+        {
+            //cout<<"\nalpha="<<Alpha[n];
+            break;
+        }
+        else
+        {
+            //step 3
+            P.push_back(currentd);
+            P.erase(P.begin());
+            /*cout<<"\n\n"<<step;
+            for(int i=0; i< P.size(); i++)
+            {
+                cout<<P[i].ToString();
+            }*/
+        }
+
+        //cout<<"\nX["<<step<<"]="<<currentX.ToString();
+    }
+    while(step++ < 1000);
+    cout<<"\n\nPowel l "<<step;
+
+    return currentX;
 }
 
 int main()
@@ -550,6 +575,11 @@ int main()
         cout<<"\n X*=";
         for(int i=0; i<X2.Getlength(); i++)
             cout<<"\n"<<X2[i];
+
+        MathVector X3 = Powell(X0);
+        cout<<"\n X*=";
+        for(int i=0; i<X3.Getlength(); i++)
+            cout<<"\n"<<X3[i];
 
     }
     catch(Exception& e)
