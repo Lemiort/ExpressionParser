@@ -465,6 +465,7 @@ MathVector Powell(MathVector X00)
     MathVector Alpha(n+1);
     MathVector prevX = X00;
     MathVector currentX = X00;
+    MathVector Y(n+2);
 
     //std::vector<MathVector> d;
     std::vector<MathVector> P;
@@ -483,13 +484,15 @@ MathVector Powell(MathVector X00)
     do
     {
         prevX = currentX;
+        Y[0] = y(currentX);
 
         //step 1
         //получаем набор направлений минимизации
         for(int k=0; k< n; k++)
         {
             Alpha[k] = LAB3_VECTOR::lab3(currentX, P[k], y, dy, eps);
-             currentX = currentX + Alpha[k]*P[k];
+            currentX = currentX + Alpha[k]*P[k];
+            Y[k+1] = y(currentX);
         }
 
         //получаем новую точку
@@ -508,7 +511,7 @@ MathVector Powell(MathVector X00)
         //d.push_back(currentd);
 
         //step 2
-        if( abs(Alpha[n]) <= eps*eps*eps )
+        if( abs(Alpha[n]) <= eps || abs((Y[n+1]-Y[n])/Y[n+1])<= eps )
         {
             //cout<<"\nalpha="<<Alpha[n];
             break;
@@ -529,6 +532,181 @@ MathVector Powell(MathVector X00)
     }
     while(step++ < 1000);
     cout<<"\n\nPowel l "<<step;
+
+    return currentX;
+}
+
+MathVector Powel2(MathVector X00)
+{
+    //размерность системы
+    int n = X00.Getlength();
+    MathVector Alpha(n+1);
+    MathVector prevX = X00;
+    MathVector currentX = X00;
+    MathVector Y(n+2);
+
+    //std::vector<MathVector> d;
+    std::vector<MathVector> P;
+    for(int i=0; i< n; i++)
+    {
+        MathVector temp(n);
+        temp[i] = 1.0;
+        P.push_back(temp);
+    }
+
+
+
+
+
+    int step = 0;
+    do
+    {
+        P.push_back(P[0]);
+        prevX = currentX;
+        Y[0] = y(currentX);
+
+        //step 1
+        //получаем набор направлений минимизации
+        for(int k=0; k<= n; k++)
+        {
+            Alpha[k] = LAB3_VECTOR::lab3(currentX, P[k], y, dy, eps);
+            currentX = currentX + Alpha[k]*P[k];
+            Y[k+1] = y(currentX);
+        }
+
+        //получаем новую точку
+        //currentX = prevX + deltaX;
+
+        //получаем направление
+        MathVector currentd = currentX - prevX;
+        currentd.Normalize();
+        //заключительный поиск
+        Alpha[n] = LAB3_VECTOR::lab3(currentX, currentd, y, dy, eps);
+        currentX = currentX + Alpha[n]*currentd;
+
+        //cout<<"\n\n X_n+2="<<currentX.ToString();
+
+        ////запоминаем
+        //d.push_back(currentd);
+
+        //step 2
+        if( abs(Alpha[n]) <= eps || abs((Y[n+1]-Y[n])/Y[n+1])<= eps )
+        {
+            //cout<<"\nalpha="<<Alpha[n];
+            break;
+        }
+        else
+        {
+            //step 3
+            //убираем первый вектор
+            P.erase(P.begin());
+            P[0] = currentd;
+            P.push_back(currentd);
+
+            /*cout<<"\n\n"<<step;
+            for(int i=0; i< P.size(); i++)
+            {
+                cout<<P[i].ToString();
+            }*/
+        }
+
+        //cout<<"\nX["<<step<<"]="<<currentX.ToString();
+    }
+    while(step++ < 1000);
+    cout<<"\n\nPowel 2 "<<step;
+
+    return currentX;
+}
+
+MathVector Powel3(MathVector X00)
+{
+    //размерность системы
+    int n = X00.Getlength();
+    MathVector Alpha(n+1);
+    MathVector prevX = X00;
+    MathVector currentX = X00;
+    MathVector M(n+1);
+    MathVector Y(n+2);
+
+    //std::vector<MathVector> d;
+    std::vector<MathVector> P;
+    for(int i=0; i< n; i++)
+    {
+        MathVector temp(n);
+        temp[i] = 1.0;
+        P.push_back(temp);
+    }
+
+
+
+
+
+    int step = 0;
+    do
+    {
+        prevX = currentX;
+        Y[0] = y(currentX);
+        //step 1
+        //получаем набор направлений минимизации
+        for(int k=0; k< n; k++)
+        {
+            Alpha[k] = LAB3_VECTOR::lab3(currentX, P[k], y, dy, eps);
+             //переходим в новую точку
+            currentX = currentX + Alpha[k]*P[k];
+            Y[k+1] = y(currentX);
+            //счиатем изменение функции
+            M[k] =  Y[k] - Y[k+1];
+        }
+
+        //получаем направление
+        MathVector currentd = currentX - prevX;
+        currentd.Normalize();
+        //заключительный поиск
+        Alpha[n] = LAB3_VECTOR::lab3(currentX, currentd, y, dy, eps);
+        currentX = currentX + Alpha[n]*currentd;
+        Y[n+1] = y(currentX);
+        M[n] =  Y[n] - Y[n+1];
+
+        //cout<<"\n\n X_n+2="<<currentX.ToString();
+
+        ////запоминаем
+        //d.push_back(currentd);
+
+        //step 2
+        if( abs(Alpha[n]) <= eps ||  abs((Y[n+1]-Y[n])/Y[n+1])<= eps)
+        {
+            //cout<<"\nalpha="<<Alpha[n];
+            break;
+        }
+        else
+        {
+            //step 3
+            int t =0;
+            double temp = -1e+6;
+            for(int i=0; i< M.Getlength(); i++)
+            {
+                if(M[i]> temp)
+                {
+                    temp = M[i];
+                    t = i;
+                }
+            }
+            //проверяем перспективность направления
+            if( 4 * M[t]* ( Y[n] - Y[n+1] )>= ( Y[0] - Y[n] -M[t] )*( Y[0] - Y[n] -M[t] ) )
+            {
+                P[t] = currentd;
+            }
+            else
+            {
+                //сохраняется старая система
+            }
+
+        }
+
+        //cout<<"\nX["<<step<<"]="<<currentX.ToString();
+    }
+    while(step++ < 1000);
+    cout<<"\n\nPowel 3 "<<step;
 
     return currentX;
 }
@@ -563,24 +741,28 @@ int main()
         //MathVector X = Portan2(X0);
         MathVector X = HookeJeeves(X0);
         cout<<"\n X*=";
-        for(int i=0; i<X.Getlength(); i++)
-            cout<<"\n"<<X[i];
+        cout<<X0.ToString();
 
         MathVector X1 = NelderMead(X0);
         cout<<"\n X*=";
-        for(int i=0; i<X1.Getlength(); i++)
-            cout<<"\n"<<X1[i];
+        cout<<X1.ToString();
 
         MathVector X2 = Rosenbrock(X0);
         cout<<"\n X*=";
-        for(int i=0; i<X2.Getlength(); i++)
-            cout<<"\n"<<X2[i];
+        cout<<X2.ToString();
 
         MathVector X3 = Powell(X0);
         cout<<"\n X*=";
-        for(int i=0; i<X3.Getlength(); i++)
-            cout<<"\n"<<X3[i];
+        cout<<X3.ToString();
 
+        MathVector X4 = Powel2(X0);
+        cout<<"\n X*=";
+        cout<<X4.ToString();
+
+
+        MathVector X5 = Powel3(X0);
+        cout<<"\n X*=";
+        cout<<X5.ToString();
     }
     catch(Exception& e)
     {
